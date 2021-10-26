@@ -36,6 +36,7 @@ jobs:
       with:
         tag_name: ${{ github.event }}
         release_name: Release ${{ github.event }}
+        body: New release for ${{ github.repository }}
         draft: false
         prerelease: false
         
