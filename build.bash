@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
 cd build
-make
+make -j4
 
 cd ..
