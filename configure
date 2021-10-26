@@ -1,8 +1,0 @@
-#! /usr/bin/env bash
-
-sudo apt install libsfml-dev freeglut3-dev libopengl-dev libopenal-dev
-
-mkdir build
-cd build
-
-cmake ..
