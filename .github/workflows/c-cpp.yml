@@ -13,11 +13,40 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    
     - name: install packages
       run: |
         sudo apt-get update
         sudo apt-get -y --force-yes install cmake libsfml-dev libopengl-dev libopenal-dev freeglut3-dev
+        
     - name: configure
       run: bash configure.bash
+      
     - name: build
       run: bash build.bash
+      
+    - name: pack executable
+      run: zip build shooter_server
+      
+    - name: create release
+      id: create_release
+      uses: actions/checkout@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: ${{ github.ref }}
+        draft: false
+        prerelease: false
+        
+    - name: upload release asset 
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./build.zip
+        asset_name: build.zip
+        asset_content_type: application/zip
