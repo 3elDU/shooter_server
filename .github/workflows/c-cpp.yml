@@ -62,7 +62,7 @@ jobs:
         asset_content_type: application/zip
 
     # Deploying
-    
+
     - name: Install SSH Key
       uses: shimataro/ssh-key-action@v2
       with:
@@ -76,4 +76,4 @@ jobs:
       run: rsync -avz ./build.zip ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/shooter-server/
     
     - name: Run update script on dev server
-      run: ssh ${{ secrets.SSH_USER }}@{{ secrets.SSH_HOST }} bash ~/deploy_update.bash
+      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash ~/deploy_update.bash
