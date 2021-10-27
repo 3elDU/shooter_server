@@ -45,7 +45,7 @@ int main() {
     Log::log("Initializing the server...");
     InitServer(server);
 
-    Log::log("IF you see this, CI/CD works!");
+    Log::log("test deploy");
 
     double lastTryReconnecting = 0;
 
