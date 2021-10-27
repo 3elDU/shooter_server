@@ -13,33 +13,40 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: install packages
+    - name: Install packages required for build
       run: |
         sudo apt-get update
         sudo apt-get -y --force-yes install cmake libsfml-dev
-        
-    - name: configure
+    
+    - name: Get tag name(version)
+      id: branch_name
+      run: |
+        echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
+        echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
+        echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
+      
+    - name: Prepare for build
       run: bash configure.bash
       
-    - name: build
+    - name: Build
       run: bash build.bash
       
-    - name: pack executable
+    - name: Pack executable in archive
       run: zip build shooter_server
       
-    - name: create release
+    - name: Create release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: v.${{ github.event_name }}
-        release_name: Release
+        tag_name: ${{ steps.branch_name.outputs.SOURCE_TAG }}
+        release_name: Version ${{ steps.branch_name.outputs.SOURCE_TAG }}
         body: New release for ${{ github.repository }}
         draft: false
         prerelease: false
         
-    - name: upload release asset 
+    - name: Upload build artifacts to release
       id: upload-release-asset
       uses: actions/upload-release-asset@v1
       env:
