@@ -45,6 +45,8 @@ int main() {
     Log::log("Initializing the server...");
     InitServer(server);
 
+    Log::log("IF you see this, CI/CD works!");
+
     double lastTryReconnecting = 0;
 
     while (true) {
