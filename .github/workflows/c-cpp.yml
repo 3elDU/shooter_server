@@ -13,6 +13,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
+
+    # Building
+
     - name: Install packages required for build
       run: |
         sudo apt-get update
@@ -30,10 +33,12 @@ jobs:
       
     - name: Build
       run: bash build.bash
-      
+    
+    # Create archive with executable
     - name: Pack executable in archive
       run: zip build shooter_server
-      
+    
+    # Creating release on GitHub
     - name: Create release
       id: create_release
       uses: actions/create-release@v1
@@ -57,6 +62,7 @@ jobs:
         asset_name: build.zip
         asset_content_type: application/zip
 
+    # Deploying
     - name: Adding known hosts
       run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
@@ -68,6 +74,6 @@ jobs:
 
     - name: Deploy with rsync
       run: rsync -avz ./build.zip ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/shooter-server/
-
-    - name: Run update script on server
+    
+    - name: Run update script on dev server
       run: ssh ${{ secrets.SSH_USER }}@{{ secrets.SSH_HOST }} bash ~/deploy_update.bash
