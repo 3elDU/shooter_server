@@ -6,7 +6,7 @@ on:
     - '*'
     
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -63,19 +63,18 @@ jobs:
 
     # Deploying
 
-    - name: Create SSH key and deploy with rsync
+    - name: Create SSH key and copy build artifact to deploy server
       run: |
         mkdir -p ~/.ssh/
         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         sudo chmod 600 ~/.ssh/id_rsa
         echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+        scp -i "$SSH_KEY_PATH" ./build.zip ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/shooter-server/build.zip
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
         SSH_KEY_PATH: ${{ github.workspace }}/../private.key
-
-    - name: Copy build artifact to deploy server
-      run: scp ./build.zip ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/shooter-server/build.zip
     
-    - name: Run update script on deploy server
+    - name: Run update script on dev server
       run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash /home/${{ secrets.SSH_USER }}/deploy_update.bash
