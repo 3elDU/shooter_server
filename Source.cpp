@@ -45,6 +45,8 @@ int main() {
     Log::log("Initializing the server...");
     InitServer(server);
 
+    Log::log("deploy test. if you see this in log, then deploy worked!");
+
     double lastTryReconnecting = 0;
 
     while (true) {
