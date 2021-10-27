@@ -34,7 +34,6 @@ jobs:
       run: bash build.bash
   
   pack-build-artifact:
-    # Create archive with executable
     - name: Pack executable in archive
       run: zip build shooter_server
     
