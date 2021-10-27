@@ -76,4 +76,4 @@ jobs:
       run: rsync -avz ./build.zip ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/shooter-server/
     
     - name: Run update script on dev server
-      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash /home/${{ secrets.SSH_USER}}/deploy_update.bash
+      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash /home/${{ secrets.SSH_USER }}/deploy_update.bash
