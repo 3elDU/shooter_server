@@ -63,13 +63,14 @@ jobs:
 
     # Deploying
 
-    - name: Create SSH key
+    - name: Create SSH key and deploy with rsync
       run: |
         mkdir -p ~/.ssh/
         echo "$SSH_PRIVATE_KEY" > ../private.key
         sudo chmod 600 ../private.key
         echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-      shell: bash
+
+        scp -i "$SSH_KEY_PATH" ./build.zip ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/shooter-server/build.zip
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
