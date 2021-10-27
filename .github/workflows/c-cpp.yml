@@ -7,7 +7,6 @@ on:
     
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -33,11 +32,13 @@ jobs:
       
     - name: Build
       run: bash build.bash
-    
+  
+  pack-build-artifact:
     # Create archive with executable
     - name: Pack executable in archive
       run: zip build shooter_server
     
+  github-create-release:
     # Creating release on GitHub
     - name: Create release
       id: create_release
@@ -61,7 +62,8 @@ jobs:
         asset_path: ./build.zip
         asset_name: build.zip
         asset_content_type: application/zip
-
+  
+  deploy:
     # Deploying
     - name: Install SSH Key
       uses: shimataro/ssh-key-action@v2
