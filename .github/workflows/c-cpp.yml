@@ -29,6 +29,10 @@ jobs:
     - name: Build
       run: cmake --build ${{github.workspace}}/build
 
+    
+    - name: Pack executable in zip file
+      run: zip build shooter_server
+
 
     # Create release on GitHub
 
