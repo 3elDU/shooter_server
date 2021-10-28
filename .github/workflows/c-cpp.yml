@@ -6,39 +6,35 @@ on:
     - '*'
     
 jobs:
-  build-and-deploy:
+  build-and-publish:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    
 
-    # Building
+    - name: Checkout repository
+    - uses: actions/checkout@v2    
+
+    # Install required libraries
 
     - name: Install packages required for build
       run: |
         sudo apt-get update
         sudo apt-get -y --force-yes install cmake libsfml-dev
-    
-    - name: Get tag name(version)
-      id: branch_name
-      run: |
-        echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
-        echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
-        echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
+
+
+    # Build
       
-    - name: Prepare for build
-      run: bash configure.bash
-      
+    - name: Configure CMake
+      # Configure CMake in a 'build' subdirectory.
+      run: cmake -B ${{github.workspace}}/build
+
     - name: Build
-      run: bash build.bash
-    
-    - name: Pack executable in archive
-      run: zip build shooter_server
+      run: cmake --build ${{github.workspace}}/build
 
-    # Creating release on GitHub
 
-    - name: Create release
+    # Create release on GitHub
+
+    - name: Create release on GitHub
       id: create_release
       uses: actions/create-release@v1
       env:
@@ -58,23 +54,5 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./build.zip
-        asset_name: build.zip
+        asset_name: build-linux.zip
         asset_content_type: application/zip
-
-    # Deploying
-
-    - name: Create SSH key and copy build artifact to deploy server
-      run: |
-        mkdir -p ~/.ssh/
-        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-        sudo chmod 600 ~/.ssh/id_rsa
-        echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-
-        scp ./build.zip ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/shooter-server/build.zip
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
-        SSH_KEY_PATH: ${{ github.workspace }}/../private.key
-    
-    - name: Run update script on dev server
-      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} bash /home/${{ secrets.SSH_USER }}/deploy_update.bash
