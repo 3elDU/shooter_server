@@ -3,10 +3,10 @@
 //
 
 #include "ShooterServer.h"
-#include "engine/utils/Log.h"
-#include "engine/network/MsgType.h"
+#include "../engine/utils/Log.h"
+#include "../engine/network/MsgType.h"
 #include "ShooterMsgType.h"
-#include "engine/utils/Time.h"
+#include "../engine/utils/Time.h"
 
 void ShooterServer::broadcast() {
     sf::Packet updatePacket;

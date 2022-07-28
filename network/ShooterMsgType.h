@@ -7,8 +7,7 @@
 
 #include <SFML/Network.hpp>
 
-enum class ShooterMsgType
-{
+enum class ShooterMsgType {
     Damage,
     Kill,
     FireTrace,

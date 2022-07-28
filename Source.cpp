@@ -5,7 +5,7 @@
 #include <fstream>
 #include <utility>
 #include <iostream>
-#include "ShooterServer.h"
+#include "network/ShooterServer.h"
 #include "engine/utils/Time.h"
 #include "engine/utils/Log.h"
 #include "engine/Consts.h"
@@ -44,6 +44,8 @@ int main() {
 
     Log::log("Initializing the server...");
     InitServer(server);
+
+    std::cout << "Server started!" << std::endl;
 
     double lastTryReconnecting = 0;
 
